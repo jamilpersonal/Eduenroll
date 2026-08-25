@@ -1,0 +1,34 @@
+{% extends 'courses/base.html' %}
+{% block title %}Log in · EduEnroll{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+    <div class="auth-side">
+        <div class="auth-side__eyebrow">EduEnroll</div>
+        <h1 class="auth-side__headline">Ten tracks.<br>One clear path each.</h1>
+        <p class="auth-side__sub">Java, Python, DBMS, DSA, System Design, Spring Boot, NumPy, Pandas, Machine Learning, Deep Learning &mdash; enroll and see exactly which module comes next.</p>
+        <div class="auth-side__rail" aria-hidden="true">
+            <div class="rail-node"></div>
+            <div class="rail-node"></div>
+            <div class="rail-node"></div>
+        </div>
+    </div>
+    <div class="auth-card">
+        <h2 class="auth-card__title">Log in</h2>
+        <p class="auth-card__hint">Use the credentials your instructor provided.</p>
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            <label class="field">
+                <span class="field__label">Username</span>
+                <input type="text" name="username" autocomplete="username" required autofocus>
+            </label>
+            <label class="field">
+                <span class="field__label">Password</span>
+                <input type="password" name="password" autocomplete="current-password" required>
+            </label>
+            <button type="submit" class="btn btn--primary btn--block">Log in</button>
+        </form>
+        <p class="auth-card__footnote">No account yet? Accounts are pre-seeded &mdash; ask your admin to add one.</p>
+    </div>
+</div>
+{% endblock %}

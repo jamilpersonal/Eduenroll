@@ -1,0 +1,70 @@
+{% extends 'courses/base.html' %}
+{% block title %}Dashboard · EduEnroll{% endblock %}
+
+{% block content %}
+<section class="dash-head">
+    <p class="dash-head__eyebrow">Welcome back</p>
+    <h1 class="dash-head__title">{{ student.name }}</h1>
+</section>
+
+{% if my_courses %}
+<section class="section">
+    <div class="section__head">
+        <h2 class="section__title">My courses</h2>
+        <span class="section__count">{{ my_courses|length }} enrolled</span>
+    </div>
+    <div class="grid grid--my">
+        {% for item in my_courses %}
+        <a href="{% url 'course_detail' item.course.id %}" class="my-course-card">
+            <div class="my-course-card__top">
+                <span class="my-course-card__name">{{ item.course.name }}</span>
+                <span class="my-course-card__pct">{{ item.progress }}%</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" style="width: {{ item.progress }}%"></div>
+            </div>
+            <span class="my-course-card__cta">Continue learning path &rarr;</span>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% else %}
+<section class="section">
+    <div class="empty-state">
+        <p>You haven't enrolled in anything yet. Pick a course from the catalog below to start a learning path.</p>
+    </div>
+</section>
+{% endif %}
+
+<section class="section">
+    <div class="section__head">
+        <h2 class="section__title">Course catalog</h2>
+        <span class="section__count">{{ catalog|length }} courses</span>
+    </div>
+    <div class="grid grid--catalog">
+        {% for item in catalog %}
+        <div class="course-card">
+            <div class="course-card__body">
+                <h3 class="course-card__name">{{ item.course.name }}</h3>
+                <p class="course-card__desc">{{ item.course.description }}</p>
+                <div class="course-card__meta">
+                    <span>{{ item.course.instructor|default:"EduEnroll faculty" }}</span>
+                    <span>&middot;</span>
+                    <span>{{ item.course.duration_weeks }} weeks</span>
+                </div>
+            </div>
+            <div class="course-card__foot">
+                {% if item.is_enrolled %}
+                    <a href="{% url 'course_detail' item.course.id %}" class="btn btn--outline btn--sm btn--block">View path</a>
+                {% else %}
+                    <form method="post" action="{% url 'enroll_course' item.course.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn--primary btn--sm btn--block">Enroll</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

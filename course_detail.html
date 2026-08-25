@@ -1,0 +1,67 @@
+{% extends 'courses/base.html' %}
+{% load static %}
+{% block title %}{{ course.name }} · EduEnroll{% endblock %}
+
+{% block content %}
+<a href="{% url 'dashboard' %}" class="back-link">&larr; Back to dashboard</a>
+
+<section class="course-head">
+    <p class="course-head__eyebrow">Learning path</p>
+    <h1 class="course-head__title">{{ course.name }}</h1>
+    <p class="course-head__desc">{{ course.description }}</p>
+    <div class="course-head__meta">
+        <span>{{ course.instructor|default:"EduEnroll faculty" }}</span>
+        <span>&middot;</span>
+        <span>{{ course.duration_weeks }} weeks</span>
+        <span>&middot;</span>
+        <span>{{ modules|length }} modules</span>
+    </div>
+
+    <div class="progress-block">
+        <div class="progress-block__row">
+            <span class="progress-block__label">Overall progress</span>
+            <span class="progress-block__value">
+                <span id="progress-count">{{ completed_count }}</span> / <span id="progress-total">{{ total_topics }}</span> topics
+                &middot; <span id="progress-pct">{{ progress }}</span>%
+            </span>
+        </div>
+        <div class="progress-track progress-track--lg">
+            <div class="progress-fill" id="progress-fill" style="width: {{ progress }}%"></div>
+        </div>
+    </div>
+</section>
+
+<section class="path">
+    <div class="path__rail" aria-hidden="true"></div>
+    {% for module in modules %}
+    <article class="module">
+        <div class="module__marker">{{ forloop.counter }}</div>
+        <div class="module__body">
+            <h2 class="module__title">{{ module.title }}</h2>
+            <ul class="topic-list">
+                {% for topic in module.topics.all %}
+                <li class="topic {% if topic.id in completed_topic_ids %}topic--done{% endif %}" data-topic-id="{{ topic.id }}">
+                    <label class="topic__label">
+                        <input type="checkbox"
+                               class="topic__checkbox"
+                               data-topic-id="{{ topic.id }}"
+                               {% if topic.id in completed_topic_ids %}checked{% endif %}>
+                        <span class="topic__check" aria-hidden="true"></span>
+                        <span class="topic__name">{{ topic.topic_name }}</span>
+                    </label>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </article>
+    {% endfor %}
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/course_detail.js' %}"></script>
+<script>
+    window.EDUENROLL_TOGGLE_URL_BASE = "/topic/";
+    window.EDUENROLL_CSRF_TOKEN = "{{ csrf_token }}";
+</script>
+{% endblock %}

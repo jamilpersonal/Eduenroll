@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}EduEnroll{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<header class="topbar">
+    <div class="topbar__inner">
+        <a href="{% url 'dashboard' %}" class="brand">
+            <span class="brand__mark">Ed<span class="brand__mark-accent">u</span>Enroll</span>
+        </a>
+        {% if user.is_authenticated %}
+        <nav class="topbar__nav">
+            <span class="topbar__user">{{ request.user.student.name|default:request.user.username }}</span>
+            <a href="{% url 'logout' %}" class="btn btn--ghost btn--sm">Log out</a>
+        </nav>
+        {% endif %}
+    </div>
+</header>
+
+{% if messages %}
+<div class="flash-stack">
+    {% for message in messages %}
+    <div class="flash flash--{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<main class="page">
+{% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+    <span>EduEnroll &mdash; a focused place to track what you're learning.</span>
+</footer>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>
